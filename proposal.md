@@ -1,19 +1,11 @@
 # Final project proposal
 
-
-Please prepare a short proposal on your final project idea by **Nov 2**. The proposal should include:
-
 - Title & description of the project
-- Your name & partner's name
+- Group member: Jiawen Tang, Xiangrong (Mark) Sun
 - A description of the data required, and how it will be obtained (e.g. URL/DOI to data source)
 - 3 questions / analysis tasks you will perform on the data; in the spirit of the assignments we have been doing.
 
-*You may choose to work with your partner or independently on the final project. Please indicate which clearly in your proposal.*
-
 Replicating results of an existing study and exploring the impact of alternative assumptions in the data preparation, statistical methods chosen etc can provide an excellent template for an analysis (you'll see more of this in units 3 & 4)
-
-
-Please create your proposal in a markdown file called `proposal.md` in the root directory of the final project repo.  
 
 
 ## Project Guidelines
