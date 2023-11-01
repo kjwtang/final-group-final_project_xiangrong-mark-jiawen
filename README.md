@@ -3,8 +3,8 @@
 
 ## Team Members:
 
-- full name, github handle
-- full name, github handle
+- Xiangrong (Mark) Sun, MarkSun2001
+- Jiawen Tang, github handle
 
 This repository is a template for your team's repository.
 
