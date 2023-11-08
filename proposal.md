@@ -1,6 +1,6 @@
 # Final project proposal
 
-# Evaluate the Main driver of Amazon Forest Degradation
+## Evaluate the Main driver of Amazon Forest Degradation
 
 Group member: Jiawen Tang, Xiangrong (Mark) Sun
 
