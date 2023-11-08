@@ -1,12 +1,13 @@
 
-*add GitHub Actions badge here*
+[![Reproducibility](https://github.com/espm-157/final-group-final_project_xiangrong-mark-jiawen/actions/workflows/main.yml/badge.svg)](https://github.com/espm-157/final-group-final_project_xiangrong-mark-jiawen/actions/workflows/main.yml)
 
 ## Team Members:
 
 - Xiangrong (Mark) Sun, MarkSun2001
 - Jiawen Tang, kjwtang
 
-This repository is a template for your team's repository.
+This repository is a template for your team's repository. 
+***The Proposal is update in `proposal.md`, This readme will update with more detail information when we get the result and analysis.
 
 ## assignment
 
