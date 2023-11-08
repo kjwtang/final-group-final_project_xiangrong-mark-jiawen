@@ -4,7 +4,7 @@
 ## Team Members:
 
 - Xiangrong (Mark) Sun, MarkSun2001
-- Jiawen Tang, github handle
+- Jiawen Tang, kjwtang
 
 This repository is a template for your team's repository.
 
