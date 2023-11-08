@@ -7,7 +7,8 @@
 - Jiawen Tang, kjwtang
 
 This repository is a template for your team's repository. 
-***The Proposal is update in `proposal.md`, This readme will update with more detail information when we get the result and analysis.
+
+***The Proposal is update in `proposal.md`, This readme will update with more detail information when we get the result and analysis.***
 
 ## assignment
 
