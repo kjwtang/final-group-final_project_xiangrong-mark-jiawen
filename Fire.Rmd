@@ -6,6 +6,10 @@ library(tidyverse)
 ```
 
 ```{r}
+6
+```
+
+```{r}
 reference <- aggregate(rast("data/reference.tif"), 2, "modal", na.rm = TRUE)
 
 reference_wgs <- project(reference, "EPSG:4326")
