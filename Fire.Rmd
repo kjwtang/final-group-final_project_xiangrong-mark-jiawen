@@ -10,8 +10,13 @@ library(tidyverse)
 ```
 ```{r}
 
-flist <- dir_ls("data/lulc/amazongov/")
+flist <- dir_ls("data")
 
+rast("data/bau_logg_final.tif") |> plot()
+
+```
+
+```{r}
 area_table <-
   map_dfr(
     .x = flist,
