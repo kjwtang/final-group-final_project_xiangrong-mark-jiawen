@@ -8,6 +8,241 @@ library(tidyverse)
 ```{r}
 6
 ```
+```{r}
+
+flist <- dir_ls("data/lulc/amazongov/")
+
+area_table <-
+  map_dfr(
+    .x = flist,
+    .f = ~ {
+
+      year_num <- as.numeric(str_extract(.x, pattern = "[0-9]+"))
+
+      sim_raster <- rast(.x)
+
+      pixel_area <- cellSize(sim_raster)
+
+      zonal_area <-
+        zonal(pixel_area, sim_raster, 'sum') %>%
+        as_tibble() %>%
+        rename(class = 1, area = 2) %>%
+        mutate(year = year_num)
+
+      return(zonal_area)
+
+    }
+  )
+
+area_table %>%
+  mutate(
+    class = factor(class),
+    area = area / 1e6
+  ) %>%
+  filter(class == "1") %>%
+  ggplot() +
+  geom_line(aes(x = year, y = area, color = class), size = 1) +
+  theme_minimal() +
+  scale_color_manual(values = c("#332288", "#44AA99", "#999933"))
+
+area_2002 <-
+  area_table %>%
+  mutate(
+    class = factor(class),
+    area = area / 1e6
+  ) %>%
+  filter(year == 2002, class == "1") %>%
+  pull(area)
+
+area_table <-
+  area_table %>%
+  mutate(
+    class = factor(class),
+    area = area / 1e6
+  ) %>%
+  filter(class == "1") %>%
+  mutate(
+    lag_year = lag(year),
+    lag_area = lag(area)
+  ) %>%
+  mutate(area_increment = area - lag_area) %>%
+  gather(key = "area_measure", value = "area", area, area_increment) %>%
+  mutate(
+    legal = 0.1 * area,
+    illegal = 0.9 * area
+  ) %>%
+  gather(
+    key = "deforestation_type",
+    value = "deforestation_area",
+    legal, illegal
+  )
+
+area_table %>%
+  drop_na() %>%
+  ggplot() +
+  facet_wrap( ~ area_measure, ncol = 1, scales = "free_y") +
+  geom_col(aes(x = year, y = deforestation_area, fill = deforestation_type)) +
+  theme_minimal() +
+  scale_fill_manual(values = c("#CC3311", "#004488"))
+
+area_2020 <-
+  area_table %>%
+  filter(
+    area_measure == "area_increment",
+    deforestation_type == "legal",
+    year == 2020
+  ) %>%
+  dplyr::select(year, area) %>%
+  mutate(area = area * 0.9) %>%
+  pull(area)
+
+op_scen <- area_table %>%
+  filter(
+    area_measure == "area_increment",
+  ) %>%
+  dplyr::select(-c(lag_year, lag_area, area_measure)) %>%
+  mutate(
+    deforestation_area = case_when(
+      year == 2021 & deforestation_type == "illegal" ~ area_2020 * 0.9,
+      year == 2022 & deforestation_type == "illegal" ~ area_2020 * 0.8,
+      year == 2023 & deforestation_type == "illegal" ~ area_2020 * 0.7,
+      year == 2024 & deforestation_type == "illegal" ~ area_2020 * 0.6,
+      year == 2025 & deforestation_type == "illegal" ~ area_2020 * 0.5,
+      year == 2026 & deforestation_type == "illegal" ~ area_2020 * 0.4,
+      year == 2027 & deforestation_type == "illegal" ~ area_2020 * 0.3,
+      year == 2028 & deforestation_type == "illegal" ~ area_2020 * 0.2,
+      year == 2029 & deforestation_type == "illegal" ~ area_2020 * 0.1,
+      year >= 2030 & deforestation_type == "illegal" ~ area_2020 * 0,
+      year == 2045 & deforestation_type == "legal" ~ 1200.528,
+      year == 2046 & deforestation_type == "legal" ~ 1171.528,
+      TRUE ~ deforestation_area
+    )
+  ) %>%
+  group_by(year) %>%
+  summarise(area = sum(deforestation_area, na.rm = TRUE)) %>%
+  mutate(area = cumsum(area)) %>%
+  mutate(area = area + area_2002) %>%
+  select(year, area) %>%
+  rename(scen_year = year, scen_area = area)
+
+op_scen %>%
+  ggplot(aes(x = scen_year, y = scen_area)) +
+  geom_line()
+
+scen <- area_table %>%
+  filter(area_measure == "area", deforestation_type == "legal") %>%
+  select(year, area) %>%
+  nest(data = everything())
+
+op_scen %>%
+  mutate(scen = scen) %>%
+  unnest(cols = scen) %>%
+  unnest(cols = scen) %>%
+  mutate(diff = abs(area - scen_area)) %>%
+  group_by(scen_year) %>%
+  slice(which.min(diff)) %>%
+  ungroup() %>%
+  select(year) %>% write_csv("op_scen.txt")
+
+# MapBiomas area
+
+mb <- read_delim("data/Mapbiomas.csv", delim = "\t")
+
+mapbiomas <- mb %>%
+  select(-nivel3) %>%
+  pivot_longer(cols = 8:41, names_to = "year", values_to = "area") %>%
+  mutate(year = as.integer(year)) %>%
+  filter(
+    year >= 2002,
+    nivel2 == "Formação Florestal"
+  ) %>%
+  group_by(year) %>%
+  summarise(sum_area = sum(area)) %>%
+  mutate(deforestation_area = abs(sum_area - lag(sum_area)) / 1e2)
+
+area_2018 <- mapbiomas %>%
+  filter(year == 2018) %>%
+  mutate(deforestation_area = deforestation_area * 0.9) %>%
+  pull(deforestation_area)
+
+scenario <- mapbiomas %>%
+  mutate(
+    illegal_area = deforestation_area * 0.9,
+    legal_area = deforestation_area * 0.1
+  ) %>%
+  drop_na() %>%
+  right_join(
+    tibble(year = c(2003:2050)),
+    by = "year"
+  ) %>%
+  mutate(
+    illegal_area = case_when(
+      year == 2019 ~ area_2018 * 0.9166667,
+      year == 2020 ~ area_2018 * 0.8333333,
+      year == 2021 ~ area_2018 * 0.75,
+      year == 2022 ~ area_2018 * 0.6666667,
+      year == 2023 ~ area_2018 * 0.5833333,
+      year == 2024 ~ area_2018 * 0.5,
+      year == 2025 ~ area_2018 * 0.4166667,
+      year == 2026 ~ area_2018 * 0.3333333,
+      year == 2027 ~ area_2018 * 0.25,
+      year == 2028 ~ area_2018 * 0.1666667,
+      year == 2029 ~ area_2018 * 0.08333333333,
+      year >= 2030 ~ area_2018 * 0,
+      TRUE ~ illegal_area
+    )
+  ) %>%
+  mutate(legal_area = case_when(
+    year > 2018 ~ mean(legal_area, na.rm = TRUE),
+    TRUE ~ legal_area
+  )) %>%
+  select(-deforestation_area) %>%
+  pivot_longer(
+    illegal_area:legal_area,
+    names_to = "deforestation_type",
+    values_to = "deforestation_area"
+  )
+
+scenario %>%
+  ggplot() +
+  geom_col(aes(x = year, y = deforestation_area, fill = deforestation_type)) +
+  theme_minimal() +
+  scale_fill_manual(values = c("#CC3311", "#004488")) +
+  labs(y = "Deforestation Rate", x = "Year", fill = "Deforestation Type")
+
+area_2002 <- mb %>%
+  select(-nivel3) %>%
+  pivot_longer(cols = 8:41, names_to = "year", values_to = "area") %>%
+  mutate(year = as.integer(year)) %>%
+  filter(
+    year == 2002,
+    nivel1 == "3. Agropecuária"
+  ) %>%
+  summarise(sum_area = sum(area) / 100) %>%
+  pull(sum_area)
+
+scen_area <- scenario %>%
+  summarise(area_sum = sum(deforestation_area, na.rm = TRUE)) %>%
+  mutate(area_sum = area_sum + area_2002) %>%
+  pull(area_sum)
+
+area_table %>%
+  filter(area_measure == "area", deforestation_type == "legal") %>%
+  select(year, area_measure, area) %>%
+  mutate(op_scen = scen_area) %>%
+  mutate(diff = abs(op_scen - area)) %>%
+  slice(which.min(diff))
+
+```
+
+
+
+
+
+
+
+
+
 
 ```{r}
 reference <- aggregate(rast("data/reference.tif"), 2, "modal", na.rm = TRUE)
