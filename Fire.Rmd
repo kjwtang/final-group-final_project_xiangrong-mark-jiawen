@@ -13,6 +13,9 @@ library(tidyverse)
 flist <- dir_ls("data")
 
 rast("data/bau_logg_final.tif") |> plot()
+rast("data/bau_fire_final.tif") |> plot()
+rast("data/fire.tif") |> plot()
+rast("data/drought.tif") |> plot()
 
 ```
 
