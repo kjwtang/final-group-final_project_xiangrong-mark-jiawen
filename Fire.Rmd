@@ -33,6 +33,8 @@ baulogg[baulogg < 0] <- NA
 #rast("data/bau_logg_final.tif")
 
 ```
+
+
 ```{r}
 baufire[baufire < 0] <- NA
 tm_shape(World,bbox = stars::st_as_stars(baufire))+tm_polygons() +
@@ -147,10 +149,17 @@ area_2020 <-
   mutate(area = area * 0.9) %>%
   pull(area)
 
+
+
 op_scen <- area_table %>%
   filter(
     area_measure == "area_increment",
-  ) %>%
+  ) 
+  
+op_scen  
+```
+
+```{r}
   dplyr::select(-c(lag_year, lag_area, area_measure)) %>%
   mutate(
     deforestation_area = case_when(
