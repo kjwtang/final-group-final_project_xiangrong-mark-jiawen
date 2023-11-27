@@ -2,7 +2,7 @@
 library(fs)
 library(terra)
 library(tidyverse)
-
+library(tmap)
 ```
 
 ```{r}
@@ -12,12 +12,50 @@ library(tidyverse)
 
 flist <- dir_ls("data")
 
-rast("data/bau_logg_final.tif") |> plot()
-rast("data/bau_fire_final.tif") |> plot()
-rast("data/fire.tif") |> plot()
-rast("data/drought.tif") |> plot()
+baulogg <-rast("data/bau_logg_final.tif") 
+baufire <-rast("data/bau_fire_final.tif")
+fire <- rast("data/fire.tif")
+drought <- rast("data/drought.tif")
+
+#rast("data/bau_fire_final.tif") 
+#rast("data/fire.tif") |> plot()
+#rast("data/drought.tif") |> plot()
+```
+
+```{r}
+
+#tm_shape(baulogg)+tm_raster()+tm_basemap()
+data("World")
+tm_shape(World,bbox = stars::st_as_stars(baulogg))+tm_polygons() +
+  tm_shape(baulogg)+tm_raster()
+baulogg[baulogg < 0] <- NA
+#rast("data/bau_fire_final.tif")
+#rast("data/bau_logg_final.tif")
 
 ```
+```{r}
+baufire[baufire < 0] <- NA
+tm_shape(World,bbox = stars::st_as_stars(baufire))+tm_polygons() +
+  tm_shape(baufire)+tm_raster()
+#baufire[baufire < 0] <- NA
+```
+
+```{r}
+fire[fire == 0] <- NA
+tm_shape(World,bbox = stars::st_as_stars(fire))+tm_polygons() +
+  tm_shape(fire)+tm_raster(n=6)
+
+```
+```{r}
+drought[drought == 0] <- NA
+tm_shape(World,bbox = stars::st_as_stars(drought))+tm_polygons() +
+  tm_shape(drought)+tm_raster(n=4)
+```
+
+
+
+
+
 
 ```{r}
 area_table <-
@@ -85,6 +123,8 @@ area_table <-
     legal, illegal
   )
 
+```
+```{r}
 area_table %>%
   drop_na() %>%
   ggplot() +
@@ -92,7 +132,10 @@ area_table %>%
   geom_col(aes(x = year, y = deforestation_area, fill = deforestation_type)) +
   theme_minimal() +
   scale_fill_manual(values = c("#CC3311", "#004488"))
+```
 
+
+```{r}
 area_2020 <-
   area_table %>%
   filter(
