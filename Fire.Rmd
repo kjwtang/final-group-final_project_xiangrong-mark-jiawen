@@ -8,6 +8,7 @@ library(tmap)
 ```{r}
 6
 ```
+
 ```{r}
 
 flist <- dir_ls("data")
@@ -26,9 +27,9 @@ drought <- rast("data/drought.tif")
 
 #tm_shape(baulogg)+tm_raster()+tm_basemap()
 data("World")
+baulogg[baulogg < 0] <- NA
 tm_shape(World,bbox = stars::st_as_stars(baulogg))+tm_polygons() +
   tm_shape(baulogg)+tm_raster()
-baulogg[baulogg < 0] <- NA
 #rast("data/bau_fire_final.tif")
 #rast("data/bau_logg_final.tif")
 
@@ -48,6 +49,7 @@ tm_shape(World,bbox = stars::st_as_stars(fire))+tm_polygons() +
   tm_shape(fire)+tm_raster(n=6)
 
 ```
+
 ```{r}
 drought[drought == 0] <- NA
 tm_shape(World,bbox = stars::st_as_stars(drought))+tm_polygons() +
