@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 ```{r}
 #install tmap to upgrade it each time when reopen the file
 #install.packages('tmap')
