@@ -1,4 +1,4 @@
-Extinctions Unit
+Current and Future Deforestation in Amazon Forest
 ================
 Jiawen Tang, Mark Sun
 

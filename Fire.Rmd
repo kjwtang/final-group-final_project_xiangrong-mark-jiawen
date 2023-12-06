@@ -1,5 +1,5 @@
 ---
-title: "Extinctions Unit"
+title: "Current and Future Deforestation in Amazon Forest"
 author: "Jiawen Tang, Mark Sun"
 maketitle: true
 output: github_document
@@ -66,5 +66,4 @@ logging[logging == 0] <- NA
 tm_shape(World,bbox = stars::st_as_stars(logging))+tm_polygons() +
   tm_shape(logging)+tm_raster(n=4)
 ```
-
 
