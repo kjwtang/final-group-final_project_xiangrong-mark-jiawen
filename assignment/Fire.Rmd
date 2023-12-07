@@ -70,7 +70,6 @@ tm_shape(World,bbox = stars::st_as_stars(logging))+tm_polygons() +
 forest <- read.csv("def_area_2004_2019.csv")
 colnames(forest)= c("Year","Acre","Amazonas","Amapa","Maranhao","Mato Grosso","Para","Rondonia","Roraima","Tocantins","Total")
 forest
-#read.csv("amazon.csv")
 ```
 
 ```{r}
@@ -94,37 +93,10 @@ total_deforest <- data.frame(iso_3166_2 = code,
                    Area = b)
 total_deforest
 
-```
+ggplot(total_deforest, aes(x = iso_3166_2, y = Area)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Total deforested areas in Brazil", x = "States", y = "Area (km^2)")
 
-```{r}
-install.packages("plotly")
-library(plotly)
-```
-
-
-```{r}
-# Create choropleth map
-
-new_map <- plot_ly(
-  total_deforest,
-  type = "choropleth",
-  locations = ~iso_3166_2,
-  locationmode = "Bra",
-  z = ~ Area,
-  colorscale = "Viridis",
-  colorbar = list(title = "Area")
-) %>%
-  layout(
-    geo = list(
-      center = list(lat = -14.235, lon = -51.925),  # Center of Brazil
-      projection = list(type = 'mercator'),  # Specify the projection type
-      scope = 'south america',  # Zoom in on South America
-      showland = TRUE
-    )
-  )
-
-# Display the map
-new_map
 ```
 
 ```{r}
@@ -142,10 +114,45 @@ states$iso_3166_2
 final <- inner_join(states,total_deforest,by = "iso_3166_2" )
 final$Area
 ```
+
 ```{r}
-tm_shape(final) + tm_polygons("Area")
+tm_shape(final) + tm_polygons("Area")+tm_symbols
+```
+```{r}
+firedata <- read.csv("amazon.csv")
+firedata
+
 ```
 
+```{r}
+grouped_data <- firedata %>%
+  group_by(year) %>%
+  summarize(mean_value = mean(number))
+
+grouped_data
+```
+```{r}
+ggplot(grouped_data, aes(x = year, y = mean_value)) +
+  geom_line() +
+  labs(title = "Mean fire occurences in Brazil", x = "year", y = "mean fire occurences")     
+```
+
+```{r}
+grouped_data2 <- firedata %>%
+  group_by(state) %>%
+  summarize(mean_value = mean(number))
+grouped_data2
+
+```
+
+```{r}
+grouped_data3 <- firedata %>%
+  group_by(month) %>%
+  summarize(mean_value = mean(number))
+grouped_data3
+
+```
+```
 
 
 
