@@ -89,10 +89,11 @@ b
 ```
 
 ```{r}
-code <- c("AC","AM","AP","MA","MT","PA","RO","RR","TO") 
-total_deforest <- data.frame(State = code,
+code <- c("BR-AC","BR-AM","BR-AP","BR-MA","BR-MT","BR-PA","BR-RO","BR-RR","BR-TO") 
+total_deforest <- data.frame(iso_3166_2 = code,
                    Area = b)
 total_deforest
+
 ```
 
 ```{r}
@@ -107,9 +108,9 @@ library(plotly)
 new_map <- plot_ly(
   total_deforest,
   type = "choropleth",
-  locations = ~State,
-  locationmode = "ISO-3",  # Set location mode to "country names" for city-level data
-  z = ~Area,
+  locations = ~iso_3166_2,
+  locationmode = "Bra",
+  z = ~ Area,
   colorscale = "Viridis",
   colorbar = list(title = "Area")
 ) %>%
@@ -127,8 +128,24 @@ new_map
 ```
 
 ```{r}
-
+library(rnaturalearth)
+library(sp)
+library(sf)
 ```
+
+```{r}
+#sp::plot(ne_countries(country = "Brazil", scale = "large"))
+states <- ne_states(country = "Brazil")
+states <- st_as_sf(states)
+states
+states$iso_3166_2
+final <- inner_join(states,total_deforest,by = "iso_3166_2" )
+final$Area
+```
+```{r}
+tm_shape(final) + tm_polygons("Area")
+```
+
 
 
 
