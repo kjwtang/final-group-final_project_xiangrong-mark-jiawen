@@ -6,12 +6,16 @@ output: github_document
 ---
 ```{r setup, messages = FALSE, cache = FALSE, warning = FALSE}
 #install tmap to upgrade it each time when reopen the file
-#install.packages('tmap')
+install.packages(c('tmap','rnaturalearth','rnaturalearthhires'))
 suppressMessages({
   library(fs)
   library(terra)
   library(tidyverse)
   library(tmap)
+  library(rnaturalearth)
+  library(sp)
+  library(sf)
+  library(reshape2)
 })
 ```
 
@@ -26,8 +30,6 @@ logging <- rast("logging.tif")
 ```
 
 ```{r}
-
-#tm_shape(baulogg)+tm_raster()+tm_basemap()
 data("World")
 baulogg[baulogg < 0] <- NA
 logmap <- tm_shape(World,bbox = stars::st_as_stars(baulogg))+tm_polygons() +
@@ -61,11 +63,13 @@ edge[edge == 0] <- NA
 tm_shape(World,bbox = stars::st_as_stars(edge))+tm_polygons() +
   tm_shape(edge)+tm_raster(n=4)
 ```
+
 ```{r}
 logging[logging == 0] <- NA
 tm_shape(World,bbox = stars::st_as_stars(logging))+tm_polygons() +
   tm_shape(logging)+tm_raster(n=4)
 ```
+
 ```{r}
 forest <- read.csv("def_area_2004_2019.csv")
 colnames(forest)= c("Year","Acre","Amazonas","Amapa","Maranhao","Mato Grosso","Para","Rondonia","Roraima","Tocantins","Total")
@@ -74,8 +78,6 @@ forest
 
 ```{r}
 #ggplot(forest,aes(x= Year,y=AC)) + geom_line()
-library(reshape2)
-
 deforest <- melt(forest,id="Year")
 deforest_show <- ggplot(deforest,aes(x=Year,y=value,colour=variable,group=variable)) + geom_line()
 deforest_show + labs(title = "Deforestation in different states of Amazon") + labs(x = "Year") + labs(y = "Deforested Area in"~km^2)
@@ -99,11 +101,6 @@ ggplot(total_deforest, aes(x = iso_3166_2, y = Area)) +
 
 ```
 
-```{r}
-library(rnaturalearth)
-library(sp)
-library(sf)
-```
 
 ```{r}
 #sp::plot(ne_countries(country = "Brazil", scale = "large"))
@@ -118,10 +115,10 @@ final$Area
 ```{r}
 tm_shape(final) + tm_polygons("Area")+tm_symbols
 ```
+
 ```{r}
 firedata <- read.csv("amazon.csv")
 firedata
-
 ```
 
 ```{r}
@@ -131,6 +128,7 @@ grouped_data <- firedata %>%
 
 grouped_data
 ```
+
 ```{r}
 ggplot(grouped_data, aes(x = year, y = mean_value)) +
   geom_line() +
@@ -152,7 +150,7 @@ grouped_data3 <- firedata %>%
 grouped_data3
 
 ```
-```
+
 
 
 
