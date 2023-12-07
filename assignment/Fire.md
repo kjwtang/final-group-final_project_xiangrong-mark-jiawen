@@ -7,7 +7,7 @@ Jiawen Tang, Mark Sun
 install.packages(c('tmap','rnaturalearth','rnaturalearthhires'))
 ```
 
-    ## Installing packages into '/srv/r'
+    ## Installing packages into '/usr/local/lib/R/site-library'
     ## (as 'lib' is unspecified)
 
 ``` r
@@ -181,6 +181,25 @@ states <- ne_states(country = "Brazil")
     ## This warning is displayed once every 8 hours.
     ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
     ## generated.
+
+    ## The rnaturalearthhires package needs to be installed.
+
+    ## Installing the rnaturalearthhires package.
+
+    ## Using github PAT from envvar GITHUB_PAT
+
+    ## Downloading GitHub repo ropensci/rnaturalearthhires@HEAD
+
+    ## 
+    ## * checking for file ‘/tmp/Rtmp1bE9xk/remotes481264c40a41e/ropensci-rnaturalearthhires-c3785a8/DESCRIPTION’ ... OK
+    ## * preparing ‘rnaturalearthhires’:
+    ## * checking DESCRIPTION meta-information ... OK
+    ## * checking for LF line-endings in source and make files and shell scripts
+    ## * checking for empty or unneeded directories
+    ## * building ‘rnaturalearthhires_0.2.1.tar.gz’
+
+    ## Installing package into '/usr/local/lib/R/site-library'
+    ## (as 'lib' is unspecified)
 
 ``` r
 states <- st_as_sf(states)
