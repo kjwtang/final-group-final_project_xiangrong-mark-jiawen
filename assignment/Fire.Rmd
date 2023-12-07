@@ -66,4 +66,72 @@ logging[logging == 0] <- NA
 tm_shape(World,bbox = stars::st_as_stars(logging))+tm_polygons() +
   tm_shape(logging)+tm_raster(n=4)
 ```
+```{r}
+forest <- read.csv("def_area_2004_2019.csv")
+colnames(forest)= c("Year","Acre","Amazonas","Amapa","Maranhao","Mato Grosso","Para","Rondonia","Roraima","Tocantins","Total")
+forest
+#read.csv("amazon.csv")
+```
+
+```{r}
+#ggplot(forest,aes(x= Year,y=AC)) + geom_line()
+library(reshape2)
+
+deforest <- melt(forest,id="Year")
+deforest_show <- ggplot(deforest,aes(x=Year,y=value,colour=variable,group=variable)) + geom_line()
+deforest_show + labs(title = "Deforestation in different states of Amazon") + labs(x = "Year") + labs(y = "Deforested Area in"~km^2)
+```
+
+```{r}
+a = c("Acre","Amazonas","Amapá","Maranhão","Mato Grosso","Pará","Rondônia","Roraima", "Tocantins")
+b <- c(sum(forest$Acre),sum(forest$Amazonas),sum(forest$Amapa),sum(forest$Maranhao),sum(forest$`Mato Grosso`),sum(forest$Para),sum(forest$Rondonia),sum(forest$Roraima),sum(forest$Tocantins))
+b
+```
+
+```{r}
+code <- c("AC","AM","AP","MA","MT","PA","RO","RR","TO") 
+total_deforest <- data.frame(State = code,
+                   Area = b)
+total_deforest
+```
+
+```{r}
+install.packages("plotly")
+library(plotly)
+```
+
+
+```{r}
+# Create choropleth map
+
+new_map <- plot_ly(
+  total_deforest,
+  type = "choropleth",
+  locations = ~State,
+  locationmode = "ISO-3",  # Set location mode to "country names" for city-level data
+  z = ~Area,
+  colorscale = "Viridis",
+  colorbar = list(title = "Area")
+) %>%
+  layout(
+    geo = list(
+      center = list(lat = -14.235, lon = -51.925),  # Center of Brazil
+      projection = list(type = 'mercator'),  # Specify the projection type
+      scope = 'south america',  # Zoom in on South America
+      showland = TRUE
+    )
+  )
+
+# Display the map
+new_map
+```
+
+```{r}
+
+```
+
+
+
+
+
 
