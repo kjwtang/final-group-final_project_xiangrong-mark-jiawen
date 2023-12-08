@@ -16,9 +16,10 @@ suppressMessages({
   library(sp)
   library(sf)
   library(reshape2)
+  library(dplyr)
+  library(ggplot2)
 })
 ```
-
 
 ```{r}
 baulogg <-rast("bau_logg_final.tif") 
@@ -32,104 +33,94 @@ logging <- rast("logging.tif")
 ```{r}
 data("World")
 baulogg[baulogg < 0] <- NA
-logmap <- tm_shape(World,bbox = stars::st_as_stars(baulogg))+tm_polygons() +
-  tm_shape(baulogg)+tm_raster()
-print(logmap)
-
-```
-
-
-```{r}
 baufire[baufire < 0] <- NA
+tm_shape(World,bbox = stars::st_as_stars(baulogg))+tm_polygons() +
+  tm_shape(baulogg)+tm_raster()
 tm_shape(World,bbox = stars::st_as_stars(baufire))+tm_polygons() +
   tm_shape(baufire)+tm_raster()
 ```
 
+
+
+
 ```{r}
 fire[fire == 0] <- NA
-tm_shape(World,bbox = stars::st_as_stars(fire))+tm_polygons() +
-  tm_shape(fire)+tm_raster(n=6)
-
-```
-
-```{r}
 drought[drought == 0] <- NA
-tm_shape(World,bbox = stars::st_as_stars(drought))+tm_polygons() +
-  tm_shape(drought)+tm_raster(n=4)
-```
-
-```{r}
 edge[edge == 0] <- NA
-tm_shape(World,bbox = stars::st_as_stars(edge))+tm_polygons() +
-  tm_shape(edge)+tm_raster(n=4)
-```
-
-```{r}
 logging[logging == 0] <- NA
+tm_shape(World,bbox = stars::st_as_stars(fire))+tm_polygons() +
+  tm_shape(fire)+tm_raster()
+tm_shape(World,bbox = stars::st_as_stars(drought))+tm_polygons() +
+  tm_shape(drought)+tm_raster()
+tm_shape(World,bbox = stars::st_as_stars(edge))+tm_polygons() +
+  tm_shape(edge)+tm_raster()
 tm_shape(World,bbox = stars::st_as_stars(logging))+tm_polygons() +
-  tm_shape(logging)+tm_raster(n=4)
+  tm_shape(logging)+tm_raster()
 ```
 
+
 ```{r}
-forest <- read.csv("def_area_2004_2019.csv")
-colnames(forest)= c("Year","Acre","Amazonas","Amapa","Maranhao","Mato Grosso","Para","Rondonia","Roraima","Tocantins","Total")
-forest
+deforest <- read.csv("def_area_2004_2019.csv")
+colnames(deforest)= c("Year","Acre","Amazonas","Amapa","Maranhao","Mato Grosso","Para","Rondonia","Roraima","Tocantins","Total")
+names(deforest)
 ```
 
 ```{r}
 #ggplot(forest,aes(x= Year,y=AC)) + geom_line()
-deforest <- melt(forest,id="Year")
-deforest_show <- ggplot(deforest,aes(x=Year,y=value,colour=variable,group=variable)) + geom_line()
+deforested <- melt(deforest,id="Year")
+deforest_show <- ggplot(deforested,aes(x=Year,y=value,colour=variable,group=variable)) + geom_line()
 deforest_show + labs(title = "Deforestation in different states of Amazon") + labs(x = "Year") + labs(y = "Deforested Area in"~km^2)
 ```
 
 ```{r}
 a = c("Acre","Amazonas","Amapá","Maranhão","Mato Grosso","Pará","Rondônia","Roraima", "Tocantins")
-b <- c(sum(forest$Acre),sum(forest$Amazonas),sum(forest$Amapa),sum(forest$Maranhao),sum(forest$`Mato Grosso`),sum(forest$Para),sum(forest$Rondonia),sum(forest$Roraima),sum(forest$Tocantins))
+b <- c(sum(deforest$Acre),sum(deforest$Amazonas),sum(deforest$Amapa),sum(deforest$Maranhao),sum(deforest$`Mato Grosso`),sum(deforest$Para),sum(deforest$Rondonia),sum(deforest$Roraima),sum(deforest$Tocantins))
 b
+forest <- read.csv("2020Forest.csv")
+forest
 ```
 
-```{r}
+```{r, messages = FALSE, cache = FALSE, warning = FALSE}
 code <- c("BR-AC","BR-AM","BR-AP","BR-MA","BR-MT","BR-PA","BR-RO","BR-RR","BR-TO") 
 total_deforest <- data.frame(iso_3166_2 = code,
                    Area = b)
+total_deforest <- merge(total_deforest, forest, by = "iso_3166_2", all.x = TRUE)
+total_deforest  <- total_deforest %>%
+  mutate(lost_percentage = (Area / CurrentArea) * 100)
 total_deforest
-
 ggplot(total_deforest, aes(x = iso_3166_2, y = Area)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
+  geom_bar(stat = "identity", fill = "brown") +
   labs(title = "Total deforested areas in Brazil", x = "States", y = "Area (km^2)")
-
+ggplot(total_deforest, aes(x = iso_3166_2, y = lost_percentage, group = 1)) +
+  geom_point(color = "red", size = 3) +
+  geom_line() +
+  labs(title = "Lost Percentage Over States", x = "States", y = "Lost Percentage")
 ```
-
 
 ```{r}
 #sp::plot(ne_countries(country = "Brazil", scale = "large"))
 states <- ne_states(country = "Brazil")
 states <- st_as_sf(states)
-states
 states$iso_3166_2
 final <- inner_join(states,total_deforest,by = "iso_3166_2" )
 final$Area
 ```
 
 ```{r}
-tm_shape(final) + tm_polygons("Area")+tm_symbols
+tm_shape(final) + tm_polygons("Area") + tm_symbols + tm_layout(legend.outside=TRUE) + tm_text("iso_3166_2", size = 0.5) 
+tm_shape(final) + tm_polygons("lost_percentage") + tm_symbols + tm_layout(legend.outside=TRUE) + tm_text("iso_3166_2", size = 0.5)
 ```
 
 ```{r}
 firedata <- read.csv("amazon.csv")
-firedata
+names(firedata)
 ```
 
 ```{r}
 grouped_data <- firedata %>%
   group_by(year) %>%
   summarize(mean_value = mean(number))
-
 grouped_data
-```
-
-```{r}
 ggplot(grouped_data, aes(x = year, y = mean_value)) +
   geom_line() +
   labs(title = "Mean fire occurences in Brazil", x = "year", y = "mean fire occurences")     
@@ -140,7 +131,10 @@ grouped_data2 <- firedata %>%
   group_by(state) %>%
   summarize(mean_value = mean(number))
 grouped_data2
-
+ggplot(grouped_data2, aes(x = state, y = mean_value)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Mean Values by State", x = "State", y = "Mean Value") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ```{r}
@@ -148,7 +142,10 @@ grouped_data3 <- firedata %>%
   group_by(month) %>%
   summarize(mean_value = mean(number))
 grouped_data3
-
+ggplot(grouped_data3, aes(x = month, y = mean_value)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Mean Values by Month", x = "Month", y = "Mean Value") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 
