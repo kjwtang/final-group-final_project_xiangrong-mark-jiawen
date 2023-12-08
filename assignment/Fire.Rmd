@@ -148,6 +148,25 @@ ggplot(grouped_data3, aes(x = month, y = mean_value)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+```{r}
+new1<-read.csv("drivers-forest-loss-brazil-amazon.csv")
+new2 <- new1 %>% select(-Entity)
+new3 <- new2 %>% select(-Code)
+new4 <- new3 |> pivot_longer(-Year)
+new4
+ggplot(new4,aes(x=Year,y=value,fill=name)) + geom_area()
+
+```
+
+```{r}
+new5 <- ggplot(new4,aes(x=Year,y=value,fill=variable)) + geom_area()
+new5 + scale_y_continuous(
+  limits = c(0, 3000000),  # Set the desired y-axis range
+  breaks = seq(0, 3000000, by = 500000)  # Set the desired sequence of tick marks
+)
+
+```
+
 
 
 
