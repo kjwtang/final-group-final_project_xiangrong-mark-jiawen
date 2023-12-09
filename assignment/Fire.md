@@ -2,12 +2,32 @@ Current and Future Deforestation in Amazon Forest
 ================
 Jiawen Tang, Mark Sun
 
+Amazon Forest is the world’s largest tropical rain forest located in the
+south america. Known as the lung of earth, it is the largest single
+carbon storage system and the largest terrestrial oxygen producer.
+However, this huge rain forest is facing deforestation and degradation.
+This study will focusing on Brazil’s part of deforestation, finding the
+historical data and project the future.
+
+We will be using several data sources, replicate from some papers and to
+show the current status of deforestation and what is the future
+prediction. The main paper we are replicate is
+<https://www.science.org/doi/10.1126/science.abp8622>, we will start
+with its current estimate and end with this as well. In between, we will
+use other sources that will reference at the end.
+
+Starting with the study, we will use several functions to create graphs,
+maps, reform and visualize the data. We get in touch with multiple use
+of dplyr, ggplot, sf, tmap, tidyverse, and we bring in new functions
+such as rnaturalearth. Before we start, we will install and read all the
+function we need for the study:
+
 ``` r
 #install tmap to upgrade it each time when reopen the file
 install.packages(c('tmap','rnaturalearth','rnaturalearthhires'))
 ```
 
-    ## Installing packages into '/usr/local/lib/R/site-library'
+    ## Installing packages into '/srv/r'
     ## (as 'lib' is unspecified)
 
 ``` r
@@ -26,34 +46,12 @@ suppressMessages({
 ```
 
 ``` r
-baulogg <-rast("bau_logg_final.tif") 
-baufire <-rast("bau_fire_final.tif")
 fire <- rast("fire.tif")
 drought <- rast("drought.tif")
 edge <- rast("edge.tif")
 logging <- rast("logging.tif")
-```
-
-``` r
 data("World")
-baulogg[baulogg < 0] <- NA
-baufire[baufire < 0] <- NA
-tm_shape(World,bbox = stars::st_as_stars(baulogg))+tm_polygons() +
-  tm_shape(baulogg)+tm_raster()
 ```
-
-    ## stars object downsampled to 1140 by 877 cells. See tm_shape manual (argument raster.downsample)
-
-![](Fire_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
-
-``` r
-tm_shape(World,bbox = stars::st_as_stars(baufire))+tm_polygons() +
-  tm_shape(baufire)+tm_raster()
-```
-
-    ## stars object downsampled to 1140 by 877 cells. See tm_shape manual (argument raster.downsample)
-
-![](Fire_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
 
 ``` r
 fire[fire == 0] <- NA
@@ -64,28 +62,28 @@ tm_shape(World,bbox = stars::st_as_stars(fire))+tm_polygons() +
   tm_shape(fire)+tm_raster()
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ``` r
 tm_shape(World,bbox = stars::st_as_stars(drought))+tm_polygons() +
   tm_shape(drought)+tm_raster()
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
 
 ``` r
 tm_shape(World,bbox = stars::st_as_stars(edge))+tm_polygons() +
   tm_shape(edge)+tm_raster()
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ``` r
 tm_shape(World,bbox = stars::st_as_stars(logging))+tm_polygons() +
   tm_shape(logging)+tm_raster()
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-3-4.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-2-4.png)<!-- -->
 
 ``` r
 deforest <- read.csv("def_area_2004_2019.csv")
@@ -104,7 +102,7 @@ deforest_show <- ggplot(deforested,aes(x=Year,y=value,colour=variable,group=vari
 deforest_show + labs(title = "Deforestation in different states of Amazon") + labs(x = "Year") + labs(y = "Deforested Area in"~km^2)
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 a = c("Acre","Amazonas","Amapá","Maranhão","Mato Grosso","Pará","Rondônia","Roraima", "Tocantins")
@@ -157,7 +155,7 @@ ggplot(total_deforest, aes(x = iso_3166_2, y = Area)) +
   labs(title = "Total deforested areas in Brazil", x = "States", y = "Area (km^2)")
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 ggplot(total_deforest, aes(x = iso_3166_2, y = lost_percentage, group = 1)) +
@@ -166,7 +164,7 @@ ggplot(total_deforest, aes(x = iso_3166_2, y = lost_percentage, group = 1)) +
   labs(title = "Lost Percentage Over States", x = "States", y = "Lost Percentage")
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
 ``` r
 #sp::plot(ne_countries(country = "Brazil", scale = "large"))
@@ -200,13 +198,13 @@ final$Area
 tm_shape(final) + tm_polygons("Area") + tm_symbols + tm_layout(legend.outside=TRUE) + tm_text("iso_3166_2", size = 0.5) 
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 tm_shape(final) + tm_polygons("lost_percentage") + tm_symbols + tm_layout(legend.outside=TRUE) + tm_text("iso_3166_2", size = 0.5)
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
 ``` r
 firedata <- read.csv("amazon.csv")
@@ -252,7 +250,7 @@ ggplot(grouped_data, aes(x = year, y = mean_value)) +
   labs(title = "Mean fire occurences in Brazil", x = "year", y = "mean fire occurences")     
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 grouped_data2 <- firedata %>%
@@ -283,7 +281,7 @@ ggplot(grouped_data2, aes(x = state, y = mean_value)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 grouped_data3 <- firedata %>%
@@ -315,4 +313,61 @@ ggplot(grouped_data3, aes(x = month, y = mean_value)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+![](Fire_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+``` r
+new1<-read.csv("drivers-forest-loss-brazil-amazon.csv")
+new2 <- new1 %>% select(-Entity)
+new3 <- new2 %>% select(-Code)
+new4 <- new3 |> pivot_longer(-Year)
+new4
+```
+
+    ## # A tibble: 143 × 3
+    ##     Year name                              value
+    ##    <int> <chr>                             <int>
+    ##  1  2001 flooding_due_to_dams                  0
+    ##  2  2001 natural_disturbances                  0
+    ##  3  2001 fire                              26000
+    ##  4  2001 selective_logging                 96000
+    ##  5  2001 other_infrastructure               9000
+    ##  6  2001 roads                             13000
+    ##  7  2001 mining                             9000
+    ##  8  2001 small.scale_clearing             249000
+    ##  9  2001 tree_plantations_including_palm   44000
+    ## 10  2001 pasture                         1520000
+    ## # ℹ 133 more rows
+
+``` r
+ggplot(new4,aes(x=Year,y=value,fill=name)) + geom_area()
+```
+
 ![](Fire_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
+baulogg <-rast("bau_logg_final.tif") 
+baufire <-rast("bau_fire_final.tif")
+baulogg[baulogg < 0] <- NA
+baufire[baufire < 0] <- NA
+suppressWarnings({
+  tm_shape(World, bbox = stars::st_as_stars(baulogg), raster.downsample = list(width = 1140, height = 877)) +
+    tm_polygons() +
+    tm_shape(baulogg) + tm_raster()
+})
+```
+
+    ## stars object downsampled to 1140 by 877 cells. See tm_shape manual (argument raster.downsample)
+
+![](Fire_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+``` r
+suppressWarnings({
+  tm_shape(World, bbox = stars::st_as_stars(baufire), raster.downsample = list(width = 1140, height = 877)) +
+    tm_polygons() +
+    tm_shape(baufire) + tm_raster()
+})
+```
+
+    ## stars object downsampled to 1140 by 877 cells. See tm_shape manual (argument raster.downsample)
+
+![](Fire_files/figure-gfm/unnamed-chunk-14-2.png)<!-- -->
