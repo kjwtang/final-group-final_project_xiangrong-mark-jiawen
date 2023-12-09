@@ -24,16 +24,6 @@ function we need for the study:
 
 ``` r
 #install tmap to upgrade it each time when reopen the file
-<<<<<<< HEAD
-=======
-install.packages(c('tmap','rnaturalearth','rnaturalearthhires'))
-```
-
-    ## Installing packages into '/usr/local/lib/R/site-library'
-    ## (as 'lib' is unspecified)
-
-``` r
->>>>>>> a49e664b20af750e3f1160e43c85df975d997eef
 suppressMessages({
   install.packages(c('tmap','rnaturalearth','rnaturalearthhires'))
   library(fs)
