@@ -44,12 +44,12 @@ suppressMessages({
 
 ## Historical Deforestation
 
-We will begin with reproduce the 2001-2018 spatial distribution of four
-major drivers of Amazonian forest degradation, excluding deforestation
-and savanna areas. We will start with reading the tif file to raster and
-using the r-data ‘World’ to create maps. The four major drivers are fire
-burning, extreme drought occurrence, area within a forest edge, and
-timber extraction.
+We will begin with reproducing Figure 2 of our main paper, the 2001-2018
+spatial distribution of four major drivers of Amazonian forest
+degradation, excluding deforestation and savanna areas. We start with
+reading the tif file to raster and using the r-data ‘World’ as well as
+“tmap” to create maps. The four major drivers are fire burning, extreme
+drought occurrence, area within a forest edge, and timber extraction.
 
 ``` r
 #read in the tif and World
@@ -450,7 +450,20 @@ tm_shape(World, bbox = stars::st_as_stars(baufire), raster.downsample = list(wid
 
 ## Conclusion
 
-balbalbla你看着写
+In this project, we were able to analyzed data and create figures to
+interpret the ecological crisis on Amazon forest in Brazil. We recreated
+maps showing the spatial distribution of major drivers of Amazonian
+forest degradation. We show the geo-spatial and temporal trends in
+deforestation of Amazon forest in Brazil. We then delved into a major
+driver of forest-loss: fire, and summarized its trend for various places
+and times. Lastly, we recreated maps showing future projection of
+logging and fire events in Brazil, which are expected to accelerate
+forest loss.
+
+With all the data and maps, we clearly see that forest-loss has been
+increasing in scale through years, along with some major drivers like
+fire. Understanding their pattern is crucial for humans to make
+reasonable conservation decisions to reverse the current dire trend.
 
 ## Reference
 
