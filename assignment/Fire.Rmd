@@ -158,6 +158,7 @@ ggplot(MeanState, aes(x = state, y = meanfire)) +
   labs(title = "Mean Fire by State", x = "State", y = "Mean Value") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
 We also want to see the monthly variations in fire occurrences of all states and time, so we group the data set by "month" column and summarize the mean. Since the original data set has month names in Portuguese, and order Alphabetically by default instead of from Jan to Dec, we made some adjustments. From the final bar-chart, it's obvious that the second half of the year (from July to December) has significantly more fire events on average than the first half.
 
 ```{r}
@@ -181,6 +182,7 @@ ggplot(MMdf_new, aes(x = Month, y = Mean)) +
   labs(title = "Mean Values by Month", x = "Month", y = "Mean Value") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
 Here, we join our fire data with state-code information, and visualize the geo-spatial distribution of fire events within Brazil using tmap. The most frequent fire events happen in BR-MT	(Mato Grosso) and BR-SP (São Paulo).It's highly likely that all states will experience more fire events in the future, showing a redder map by then. 
 
 ```{r}
@@ -190,6 +192,7 @@ mapfire$iso_3166_2 <- str_replace(mapfire$iso_3166_2, "^\\t", "")
 firemap <- inner_join(states,mapfire,by = "iso_3166_2" )
 tm_shape(firemap) + tm_polygons("meanfire") + tm_symbols + tm_layout(legend.outside=TRUE) + tm_text("iso_3166_2", size = 0.5) +tmap_options(check.and.fix = TRUE)
 ```
+
 ## Drivers of forest-loss in Brazil amazon forest
 
 On a broader scale, we are concerned about the effects of multiple drivers of forest loss in Brazil amazon. We are able to do that using data collected by Tyukavina et al. (2017). We read and pivot the data file, and visualize it using geom_area(). Overall, there is a decreasing trend of forest loss over time, and pasture has always been the predominant cause of forest loss.
