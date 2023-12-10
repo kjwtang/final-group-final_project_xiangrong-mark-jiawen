@@ -5,22 +5,25 @@ Jiawen Tang, Mark Sun
 Amazon Forest is the world’s largest tropical rain forest located in the
 south america. Known as the lung of earth, it is the largest single
 carbon storage system and the largest terrestrial oxygen producer.
-However, this huge rain forest is facing deforestation and degradation.
-This study will focusing on Brazil’s part of deforestation, finding the
-historical data and project the future.
+However, this huge rain forest is facing large scale deforestation and
+degradation due to human activities. In this project, we will focus on
+Brazil’s part of deforestation, finding the historical data to
+understand deforestation status and projecting the future.
 
-We will be using several data sources, replicate from some papers and to
-show the current status of deforestation and what is the future
-prediction. The main paper we are replicate is
+We will be using several data sources, and replicate data from research
+paper to show the historical and current status of deforestation. We
+will also explore future forest conditions under different scenarios.
+The main paper we aim to replicate is
 <https://www.science.org/doi/10.1126/science.abp8622>, we will start
-with its current estimate and end with this as well. In between, we will
-use other sources that will reference at the end.
+with its current estimate and end with this as well. Apart from it, we
+will use other data sources such as fire to establish connections with
+deforestation.
 
 Starting with the study, we will use several functions to create graphs,
 maps, reform and visualize the data. We get in touch with multiple use
-of dplyr, ggplot, sf, tmap, tidyverse, and we bring in new functions
-such as rnaturalearth. Before we start, we will install and read all the
-function we need for the study:
+of dplyr, ggplot, sf, tmap, tidyverse, and we bring in new packages and
+functions such as rnaturalearth. Before we start, we will install and
+read all the packages we need for the study:
 
 ``` r
 #install tmap to upgrade it each time when reopen the file
@@ -90,11 +93,12 @@ tm_shape(World,bbox = stars::st_as_stars(logging))+tm_polygons() +
 
 ## Brazil Deforestation in Amazon Forest
 
-Because of the different grades between each factor, we cannot
-intuitively feel the geographical distribution of deforestation. We will
-use state data within Brazil to visualize specific forest loss. First we
-read the Brazilian deforestation data from 2004 to 2019. These contains
-10 States within the forest area, and a total forest lost.
+To get a direst, overall sense of the geographical distribution of
+deforestation, we will use state data from INPE (National Institute for
+Space Research in Brazil National Penitentiary Institute of Peru) of
+Brazil to visualize forest loss of different states. First we read theis
+Brazilian deforestation data file, which contains deforested area within
+9 states, as well as a total forest lost, from 2004 to 2019.
 
 ``` r
 deforest <- read.csv("def_area_2004_2019.csv")
@@ -106,9 +110,9 @@ names(deforest)
     ##  [6] "Mato Grosso" "Para"        "Rondonia"    "Roraima"     "Tocantins"  
     ## [11] "Total"
 
-We want to plot out each states’ lost of forest so we can decide how to
-visualize forest lost on map. For now, simply just present the data with
-a line plot:
+We want to plot out each states’ lost of forest throughout these years,
+so we can decide how to visualize forest lost on map. For now, we
+present the data with a line plot:
 
 ``` r
 deforested <- melt(deforest,id="Year")
@@ -118,10 +122,11 @@ deforest_show + labs(title = "Deforestation in different states of Amazon") + la
 
 ![](Fire_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-At this point, we want to see the percentage lost as well as the total
-lost of each state, so we can ready to create maps for them. We will sum
-by year and read in a new data from world bank. We also create a list of
-area code for future reference.
+At this point, we want to see the percentage lost and the total lost of
+each state over these years, so we can create maps for them. We will
+calculate the sum of deforested area for each state, and read in a new
+data from world bank. We also create a list of area code for future
+reference.
 
 ``` r
 Statename = c("Acre","Amazonas","Amapá","Maranhão","Mato Grosso","Pará","Rondônia","Roraima", "Tocantins")
@@ -167,8 +172,9 @@ total_deforest
     ## 8      BR-RR     Roraima  3891      180762       2.1525542
     ## 9      BR-TO   Tocantins  1241       49955       2.4842358
 
-We will visualize the table by graph, one for the deforestation area,
-and another for the deforestation percentage:
+We will visualize the table by graph, one bar-chart for the
+deforestation area, and another dot-chart for the deforestation
+percentage:
 
 ``` r
 ggplot(total_deforest, aes(x = state, y = Area)) +
@@ -227,13 +233,13 @@ final$Area
     ## [1]  3891 62778  5722   616 12425 22279 43065  8318  1241
 
 Now we can start drawing the map. We have the base map and the data, and
-we plot it using tmap. It can be seen that Para is the main loss area,
-but due to its large forest area, the ratio is not higher. In contrast,
-the neighbouring marginal provinces experienced forest losses of more
-than 10 per cent because they had less forest themselves. Because of the
-data issue, we only can use the forest area of 2020, which will increase
-the percentage since 2000 will have a larger forest area for most of the
-states.
+we plot it using tmap. From the graph we cansee that Para is the main
+forest-loss state, but due to its large area, the ratio is not very
+high. In contrast, the neighboring marginal provinces experienced forest
+losses of more than 10 per cent because they had less forest themselves.
+Because of the data issue, we only can use the forest area of 2020,
+which will increase the percentage since 2000 will have a larger forest
+area for most of the states.
 
 ``` r
 tm_shape(final) + tm_polygons("Area") + tm_symbols + tm_layout(legend.outside=TRUE) + tm_text("state", size = 0.5) 
@@ -248,6 +254,15 @@ tm_shape(final) + tm_polygons("lost_percentage") + tm_symbols + tm_layout(legend
 ![](Fire_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
 ## Fire in Brazil
+
+Fire is also a major driver of forest lost in Amazon. In recent years,
+destructive wildfire has increased both frequency and intensity due to
+climate change and other human disturbances, resulting in massive forest
+loss. In this section, we use a fire data from Kaggle to visualize the
+frequency of fire occurrences in different states of Brazil over the
+years, and conclude geo-spatial trends.
+
+First, we read this fire data (which we made our own edition).
 
 ``` r
 firedata <- read.csv("amazon.csv")
