@@ -294,14 +294,15 @@ ggplot(MeanState, aes(x = state, y = meanfire)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-11-1.png)<!-- --> We also want
-to see the monthly variations in fire occurrences of all states and
-time, so we group the data set by “month” column and summarize the mean.
-Since the original data set has month names in Portuguese, and order
-Alphabetically by default instead of from Jan to Dec, we made some
-adjustments. From the final bar-chart, it’s obvious that the second half
-of the year (from July to December) has significantly more fire events
-on average than the first half.
+![](Fire_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+We also want to see the monthly variations in fire occurrences of all
+states and time, so we group the data set by “month” column and
+summarize the mean. Since the original data set has month names in
+Portuguese, and order Alphabetically by default instead of from Jan to
+Dec, we made some adjustments. From the final bar-chart, it’s obvious
+that the second half of the year (from July to December) has
+significantly more fire events on average than the first half.
 
 ``` r
 MeanMonth <- firedata %>%
@@ -359,12 +360,13 @@ ggplot(MMdf_new, aes(x = Month, y = Mean)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-12-1.png)<!-- --> Here, we join
-our fire data with state-code information, and visualize the geo-spatial
-distribution of fire events within Brazil using tmap. The most frequent
-fire events happen in BR-MT (Mato Grosso) and BR-SP (São Paulo).It’s
-highly likely that all states will experience more fire events in the
-future, showing a redder map by then.
+![](Fire_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+Here, we join our fire data with state-code information, and visualize
+the geo-spatial distribution of fire events within Brazil using tmap.
+The most frequent fire events happen in BR-MT (Mato Grosso) and BR-SP
+(São Paulo).It’s highly likely that all states will experience more fire
+events in the future, showing a redder map by then.
 
 ``` r
 mapfire <- firedata |> group_by(iso_3166_2) |>
@@ -376,8 +378,9 @@ tm_shape(firemap) + tm_polygons("meanfire") + tm_symbols + tm_layout(legend.outs
 
     ## Warning: The shape firemap is invalid. See sf::st_is_valid
 
-![](Fire_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> \## Drivers of
-forest-loss in Brazil amazon forest
+![](Fire_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+## Drivers of forest-loss in Brazil amazon forest
 
 On a broader scale, we are concerned about the effects of multiple
 drivers of forest loss in Brazil amazon. We are able to do that using
