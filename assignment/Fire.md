@@ -1,6 +1,6 @@
 Current and Future Deforestation in Amazon Forest
 ================
-Jiawen Tang, Mark Sun
+Jiawen Tang, Xiangrong (Mark) Sun
 
 Amazon Forest is the world’s largest tropical rain forest located in the
 south america. Known as the lung of earth, it is the largest single
@@ -218,19 +218,8 @@ states <- ne_states(country = "Brazil")
 
 ``` r
 states <- st_as_sf(states)
-states$iso_3166_2
-```
-
-    ##  [1] "BR-RS" "BR-RR" "BR-PA" "BR-AC" "BR-AP" "BR-MS" "BR-PR" "BR-SC" "BR-AM"
-    ## [10] "BR-RO" "BR-MT" "BR-MA" "BR-PI" "BR-CE" "BR-RN" "BR-PB" "BR-PE" "BR-AL"
-    ## [19] "BR-SE" "BR-BA" "BR-ES" "BR-RJ" "BR-SP" "BR-GO" "BR-DF" "BR-MG" "BR-TO"
-
-``` r
 final <- inner_join(states,total_deforest,by = "iso_3166_2" )
-final$Area
 ```
-
-    ## [1]  3891 62778  5722   616 12425 22279 43065  8318  1241
 
 Now we can start drawing the map. We have the base map and the data, and
 we plot it using tmap. From the graph we cansee that Para is the main
@@ -253,7 +242,7 @@ tm_shape(final) + tm_polygons("lost_percentage") + tm_symbols + tm_layout(legend
 
 ![](Fire_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
-## Fire in Brazil
+## Fire frequency in Brazil
 
 Fire is also a major driver of forest lost in Amazon. In recent years,
 destructive wildfire has increased both frequency and intensity due to
@@ -262,7 +251,7 @@ loss. In this section, we use a fire data from Kaggle to visualize the
 frequency of fire occurrences in different states of Brazil over the
 years, and conclude geo-spatial trends.
 
-First, we read this fire data (which we made our own edition).
+First, we read this fire data, which we made some of our own edition.
 
 ``` r
 firedata <- read.csv("amazon.csv")
@@ -271,6 +260,12 @@ names(firedata)
 
     ## [1] "year"       "state"      "month"      "number"     "date"      
     ## [6] "iso_3166_2"
+
+We first group the fire data by “year”, and calculate the mean number of
+fires per year in Brazil from 1998 to 2017.After that, we plot the trend
+using line plot. From the plot, it seems that the mean number of fire
+events in Brazil has been rising through time, despite having some
+fluctuations.
 
 ``` r
 MeanBrazil <- firedata %>%
@@ -283,6 +278,11 @@ ggplot(MeanBrazil, aes(x = year, y = mean_value)) +
 
 ![](Fire_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
+Now we are interested in how does fire frequency varies between
+different states in Brazil. We group by “state” column and show the
+result as bar-chart. There are big geo-spatial variations of fire
+frequency in Brazil, which we will visualize as map in later steps.
+
 ``` r
 MeanState <- firedata %>%
   group_by(state) %>%
@@ -294,19 +294,77 @@ ggplot(MeanState, aes(x = state, y = meanfire)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-11-1.png)<!-- --> We also want
+to see the monthly variations in fire occurrences of all states and
+time, so we group the data set by “month” column and summarize the mean.
+Since the original data set has month names in Portuguese, and order
+Alphabetically by default instead of from Jan to Dec, we made some
+adjustments. From the final bar-chart, it’s obvious that the second half
+of the year (from July to December) has significantly more fire events
+on average than the first half.
 
 ``` r
 MeanMonth <- firedata %>%
   group_by(month) %>%
   summarize(mean_value = mean(number))
-ggplot(MeanMonth, aes(x = month, y = mean_value)) +
+MeanMonth$month = c("April","August","December","Feburary","January","July","June","May","March","November","October","September")
+MeanMonth
+```
+
+    ## # A tibble: 12 × 2
+    ##    month     mean_value
+    ##    <chr>          <dbl>
+    ##  1 April           52.2
+    ##  2 August         163. 
+    ##  3 December       112. 
+    ##  4 Feburary        57.1
+    ##  5 January         88.3
+    ##  6 July           171. 
+    ##  7 June           104. 
+    ##  8 May             64.3
+    ##  9 March           56.9
+    ## 10 November       158. 
+    ## 11 October        164. 
+    ## 12 September      108.
+
+``` r
+MMdf_new <- data.frame(
+  Month= month.name,
+  Mean = c(88.25849,57.12602,56.88408,52.20143,64.31734,103.72347,170.97428, 163.05636,108.47834,164.22515,158.34825,112.15493)
+)
+MMdf_new$Month <-factor(MMdf_new$Month, levels = c("January", "February", "March", "April",
+                                        "May", "June", "July", "August",
+                                        "September", "October", "November", "December"))
+MMdf_new
+```
+
+    ##        Month      Mean
+    ## 1    January  88.25849
+    ## 2   February  57.12602
+    ## 3      March  56.88408
+    ## 4      April  52.20143
+    ## 5        May  64.31734
+    ## 6       June 103.72347
+    ## 7       July 170.97428
+    ## 8     August 163.05636
+    ## 9  September 108.47834
+    ## 10   October 164.22515
+    ## 11  November 158.34825
+    ## 12  December 112.15493
+
+``` r
+ggplot(MMdf_new, aes(x = Month, y = Mean)) +
   geom_bar(stat = "identity", fill = "steelblue") +
   labs(title = "Mean Values by Month", x = "Month", y = "Mean Value") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-12-1.png)<!-- --> Here, we join
+our fire data with state-code information, and visualize the geo-spatial
+distribution of fire events within Brazil using tmap. The most frequent
+fire events happen in BR-MT (Mato Grosso) and BR-SP (São Paulo).It’s
+highly likely that all states will experience more fire events in the
+future, showing a redder map by then.
 
 ``` r
 mapfire <- firedata |> group_by(iso_3166_2) |>
@@ -318,14 +376,22 @@ tm_shape(firemap) + tm_polygons("meanfire") + tm_symbols + tm_layout(legend.outs
 
     ## Warning: The shape firemap is invalid. See sf::st_is_valid
 
-![](Fire_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](Fire_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> \## Drivers of
+forest-loss in Brazil amazon forest
+
+On a broader scale, we are concerned about the effects of multiple
+drivers of forest loss in Brazil amazon. We are able to do that using
+data collected by Tyukavina et al. (2017). We read and pivot the data
+file, and visualize it using geom_area(). Overall, there is a decreasing
+trend of forest loss over time, and pasture has always been the
+predominant cause of forest loss.
 
 ``` r
-new1<-read.csv("drivers-forest-loss-brazil-amazon.csv")
-new2 <- new1 %>% select(-Entity)
-new3 <- new2 %>% select(-Code)
-new4 <- new3 |> pivot_longer(-Year)
-new4
+driver <- read.csv("drivers-forest-loss-brazil-amazon.csv")
+driver <- driver %>% select(-Entity)
+driver <- driver %>% select(-Code)
+driver_year <- driver |> pivot_longer(-Year)
+driver_year
 ```
 
     ## # A tibble: 143 × 3
@@ -344,7 +410,7 @@ new4
     ## # ℹ 133 more rows
 
 ``` r
-ggplot(new4,aes(x=Year,y=value,fill=name)) + geom_area()
+ggplot(driver_year,aes(x=Year,y=value,fill=name)) + geom_area()+ labs(x = "Year", y = "forest loss in hectare")
 ```
 
 ![](Fire_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
@@ -352,9 +418,11 @@ ggplot(new4,aes(x=Year,y=value,fill=name)) + geom_area()
 ## Future Deforestation
 
 Let’s go back to the future mentioned in the original paper. We show
-that fires will increase in response to human activity and climate
-change, and that logging is inevitable. If these two are not improved,
-they will have the following conditions:
+that fire frequency is expected to increase in response to human
+activity and climate change, along with continuing logging, under the
+“Business-as-usual” scenario.These activities will exacerbate the
+ecological crisis in Amazon, worsening the ecosystem health and
+integrity.
 
 ``` r
 baulogg <-rast("bau_logg_final.tif") 
@@ -385,3 +453,10 @@ tm_shape(World, bbox = stars::st_as_stars(baufire), raster.downsample = list(wid
 balbalbla你看着写
 
 ## Reference
+
+Tyukavina et al. (2017). Types and rates of forest disturbance in
+Brazilian Legal Amazon, 2000–2013. Science
+
+<https://www.kaggle.com/datasets/mbogernetto/brazilian-amazon-rainforest-degradation/data>
+
+<https://www.kaggle.com/code/instalok/brazil-forest-fire/input>
