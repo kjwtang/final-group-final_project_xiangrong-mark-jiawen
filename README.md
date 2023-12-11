@@ -6,29 +6,16 @@
 - Xiangrong (Mark) Sun, MarkSun2001
 - Jiawen Tang, kjwtang
 
-This repository is a template for your team's repository. 
 
-***The Proposal is update in `proposal.md`, This readme will update with more detail information when we get the result and analysis.***
+## Project
 
-## assignment
+All of our work for the term project are in the `assignment` directory.  We worked in the `.Rmd` notebook, and commited our rendered output files (`.md` and associated files) in the `assignment` directory as well. We also uploaded some data file we used for analysis there. 
 
-All work for this assignment should be in the `assignment` directory.  You will work in the `.Rmd` notebook, and commit your rendered output files (`.md` and associated files) in the `assignment` directory as well.
+## Project overview
 
-## Special files
-
-All team repositories will also include most of the special files found here:
-
-### Common files
-
-- `README.md` this file, a general overview of the repository in markdown format.  
-- `.gitignore` Optional file, ignore common file types we don't want to accidentally commit to GitHub. Most projects should use this. 
-- `<REPO-NAME>.Rproj` Optional, an R-Project file created by RStudio for it's own configuration.  Some people prefer to `.gitignore` this file.
+In this project, we were able to analyzed data and create figures to interpret the ecological crisis on Amazon forest in Brazil. We recreated maps showing the spatial distribution of major drivers of Amazonian forest degradation. We show the geo-spatial and temporal trends in deforestation of Amazon forest in Brazil. We then delved into a major driver of forest-loss: fire, and summarized its trend for various places and times. Lastly, we recreated maps showing future projection of logging and fire events in Brazil, which are expected to accelerate forest loss.
 
 
-### Infrastructure for Testing
-
-
-- `DESCRIPTION` a metadata file for the repository, based on the R package standard. It's main purpose here is as a place to list any additional R packages/libraries needed for any of the `.Rmd` files to run.
 
 
 
