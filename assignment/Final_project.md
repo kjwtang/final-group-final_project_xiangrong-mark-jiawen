@@ -68,28 +68,28 @@ tm_shape(World,bbox = stars::st_as_stars(fire))+tm_polygons() +
   tm_shape(fire)+tm_raster()
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 ``` r
 tm_shape(World,bbox = stars::st_as_stars(drought))+tm_polygons() +
   tm_shape(drought)+tm_raster()
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
 
 ``` r
 tm_shape(World,bbox = stars::st_as_stars(edge))+tm_polygons() +
   tm_shape(edge)+tm_raster()
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
 
 ``` r
 tm_shape(World,bbox = stars::st_as_stars(logging))+tm_polygons() +
   tm_shape(logging)+tm_raster()
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-1-4.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-1-4.png)<!-- -->
 
 ## Brazil Deforestation in Amazon Forest
 
@@ -120,7 +120,7 @@ deforest_show <- ggplot(deforested,aes(x=Year,y=value,colour=variable,group=vari
 deforest_show + labs(title = "Deforestation in different states of Amazon") + labs(x = "Year") + labs(y = "Deforested Area in"~km^2)
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 At this point, we want to see the percentage lost and the total lost of
 each state over these years, so we can create maps for them. We will
@@ -183,7 +183,7 @@ ggplot(total_deforest, aes(x = state, y = Area)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 ggplot(total_deforest, aes(x = iso_3166_2, y = lost_percentage, group = 1)) +
@@ -192,7 +192,7 @@ ggplot(total_deforest, aes(x = iso_3166_2, y = lost_percentage, group = 1)) +
   labs(title = "Forest Lost Percentage Over States", x = "State Code", y = "Lost Percentage")
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
 From the above two charts, we can clearly see that the area and ratio of
 deforestation are different. However, since these names cannot be
@@ -234,13 +234,13 @@ area for most of the states.
 tm_shape(final) + tm_polygons("Area") + tm_symbols + tm_layout(legend.outside=TRUE) + tm_text("state", size = 0.5) 
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 tm_shape(final) + tm_polygons("lost_percentage") + tm_symbols + tm_layout(legend.outside=TRUE) + tm_text("state", size = 0.5)
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
 ## Fire frequency in Brazil
 
@@ -276,7 +276,7 @@ ggplot(MeanBrazil, aes(x = year, y = mean_value)) +
   labs(title = "Mean fire occurences in Brazil", x = "year", y = "mean fire occurences")     
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 Now we are interested in how does fire frequency varies between
 different states in Brazil. We group by “state” column and show the
@@ -294,7 +294,7 @@ ggplot(MeanState, aes(x = state, y = meanfire)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 We also want to see the monthly variations in fire occurrences of all
 states and time, so we group the data set by “month” column and
@@ -360,7 +360,7 @@ ggplot(MMdf_new, aes(x = Month, y = Mean)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 Here, we join our fire data with state-code information, and visualize
 the geo-spatial distribution of fire events within Brazil using tmap.
@@ -378,7 +378,7 @@ tm_shape(firemap) + tm_polygons("meanfire") + tm_symbols + tm_layout(legend.outs
 
     ## Warning: The shape firemap is invalid. See sf::st_is_valid
 
-![](Fire_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ## Drivers of forest-loss in Brazil amazon forest
 
@@ -416,7 +416,7 @@ driver_year
 ggplot(driver_year,aes(x=Year,y=value,fill=name)) + geom_area()+ labs(x = "Year", y = "forest loss in hectare")
 ```
 
-![](Fire_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ## Future Deforestation
 
@@ -439,7 +439,7 @@ tm_shape(World, bbox = stars::st_as_stars(baulogg), raster.downsample = list(wid
 
     ## stars object downsampled to 1140 by 877 cells. See tm_shape manual (argument raster.downsample)
 
-![](Fire_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 tm_shape(World, bbox = stars::st_as_stars(baufire), raster.downsample = list(width = 1140, height = 877)) +
@@ -449,7 +449,7 @@ tm_shape(World, bbox = stars::st_as_stars(baufire), raster.downsample = list(wid
 
     ## stars object downsampled to 1140 by 877 cells. See tm_shape manual (argument raster.downsample)
 
-![](Fire_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
 
 ## Conclusion
 
@@ -476,3 +476,5 @@ Brazilian Legal Amazon, 2000–2013. Science
 <https://www.kaggle.com/datasets/mbogernetto/brazilian-amazon-rainforest-degradation/data>
 
 <https://www.kaggle.com/code/instalok/brazil-forest-fire/input>
+
+<https://data.worldbank.org/indicator/AG.LND.FRST.ZS?locations=BR>
