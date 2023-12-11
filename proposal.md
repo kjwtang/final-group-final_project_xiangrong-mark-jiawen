@@ -11,6 +11,6 @@ We will be using several data sources, and replicate data from research paper to
 We will also use other Brazil Forest Datasets to plot and visualize the lost of forest, percentage of lost, and the time variation. The three questions we will answer and explain in our project are:
 1. What are the climate drivers of the Amazon Forest Degradation, based on the observation data?
 2. Where in Brazil is the most in deforestation happening? Who have the higher lost percentage?
-3. What are the trends in space and time between fires? What are the future deforestation trends?
+3. What are the spatial and temporal hat are the future deforestation trends?
 
 We will display in the form of maps and charts, organize and visualize relevant data (including Cluster data and spatial data), and recreate some of the maps in this article.
