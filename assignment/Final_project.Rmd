@@ -4,10 +4,8 @@ author: "Jiawen Tang, Xiangrong (Mark) Sun"
 maketitle: true
 output: github_document
 ---
-The three additional skills we used from the second bulleted list of the rubric:
-1. Expansion of ggplot functions (to include more than default characteristics)
-2. Use of spatial vector data (sf package) and visualization of spatial data
-3. Writing / working with custom R functions (and dplyr verbs / functions)
+
+The three additional skills we used from the second bulleted list of the rubric: 1. Expansion of ggplot functions (to include more than default characteristics) 2. Use of spatial vector data (sf package) and visualization of spatial data 3. Writing / working with custom R functions (and dplyr verbs / functions)
 
 Amazon Forest is the world's largest tropical rain forest located in the south america. Known as the lung of earth, it is the largest single carbon storage system and the largest terrestrial oxygen producer. However, this huge rain forest is facing large scale deforestation and degradation due to human activities. In this project, we will focus on Brazil's part of deforestation, finding the historical data to understand deforestation status and projecting the future.
 
@@ -187,7 +185,7 @@ ggplot(MMdf_new, aes(x = Month, y = Mean)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-Here, we join our fire data with state-code information, and visualize the geo-spatial distribution of fire events within Brazil using tmap. The most frequent fire events happen in BR-MT (Mato Grosso) and BR-SP (São Paulo).It's highly likely that all states will experience more fire events in the future, showing a redder map by then.
+Here, we join our fire data with state-code information, and visualize the geo-spatial distribution of fire events within Brazil using tmap. The most frequent fire events happen in BR-MT (Mato Grosso) and BR-SP (São Paulo).It's highly likely that all states will experience more fire events in the future, showing a redder map by then. Due to data problems, some states cannot be displayed normally, and we have blocked them.
 
 ```{r}
 mapfire <- firedata |> group_by(iso_3166_2) |>

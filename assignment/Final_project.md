@@ -372,7 +372,9 @@ Here, we join our fire data with state-code information, and visualize
 the geo-spatial distribution of fire events within Brazil using tmap.
 The most frequent fire events happen in BR-MT (Mato Grosso) and BR-SP
 (São Paulo).It’s highly likely that all states will experience more fire
-events in the future, showing a redder map by then.
+events in the future, showing a redder map by then. Due to data
+problems, some states cannot be displayed normally, and we have blocked
+them.
 
 ``` r
 mapfire <- firedata |> group_by(iso_3166_2) |>
