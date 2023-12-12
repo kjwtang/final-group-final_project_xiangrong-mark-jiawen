@@ -2,6 +2,12 @@ Current and Future Deforestation in Amazon Forest
 ================
 Jiawen Tang, Xiangrong (Mark) Sun
 
+The three additional skills we used from the second bulleted list of the
+rubric: 1. Expansion of ggplot functions (to include more than default
+characteristics) 2. Use of spatial vector data (sf package) and
+visualization of spatial data 3. Writing / working with custom R
+functions (and dplyr verbs / functions)
+
 Amazon Forest is the world’s largest tropical rain forest located in the
 south america. Known as the lung of earth, it is the largest single
 carbon storage system and the largest terrestrial oxygen producer.
