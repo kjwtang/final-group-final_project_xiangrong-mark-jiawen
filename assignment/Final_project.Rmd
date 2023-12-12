@@ -4,6 +4,10 @@ author: "Jiawen Tang, Xiangrong (Mark) Sun"
 maketitle: true
 output: github_document
 ---
+The three additional skills we used from the second bulleted list of the rubric:
+1. Expansion of ggplot functions (to include more than default characteristics)
+2. Use of spatial vector data (sf package) and visualization of spatial data
+3. Writing / working with custom R functions (and dplyr verbs / functions)
 
 Amazon Forest is the world's largest tropical rain forest located in the south america. Known as the lung of earth, it is the largest single carbon storage system and the largest terrestrial oxygen producer. However, this huge rain forest is facing large scale deforestation and degradation due to human activities. In this project, we will focus on Brazil's part of deforestation, finding the historical data to understand deforestation status and projecting the future.
 
